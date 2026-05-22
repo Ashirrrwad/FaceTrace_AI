@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaceTrace AI | Forensic Reconstruction</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="forensic-mode">
+    <div class="stars-container"></div>
+    <div class="scanline"></div>
+    <div class="ui-overlay"></div>
+
+    <div class="app-layout">
+        <!-- Left Sidebar: History -->
+        <aside class="history-sidebar glass">
+            <div class="sidebar-header">
+                <span class="icon">📁</span>
+                <h3>CASE HISTORY</h3>
+            </div>
+            <div id="history-list" class="sidebar-content">
+                <div class="empty-state">No active cases</div>
+            </div>
+        </aside>
+
+        <!-- Main Interface -->
+        <main class="main-content">
+            <header class="app-header">
+                <div class="branding">
+                    <h1 class="glitch" data-text="FaceTrace AI">FaceTrace AI</h1>
+                    <p class="tagline">AI-powered forensic sketch generation from human memory</p>
+                </div>
+
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="#" class="nav-link active" data-section="home">HOME</a></li>
+                        <li><a href="#" class="nav-link" data-section="cases">CASES</a></li>
+                        <li><a href="#" class="nav-link" data-section="contact">CONTACT</a></li>
+                    </ul>
+                </nav>
+
+                <div class="case-manager">
+                    <div class="system-status">
+                        <span class="status-dot"></span>
+                        <span id="current-case-id">CASE: #PENDING</span>
+                    </div>
+                    <input type="text" id="case-name-input" placeholder="ASSIGN CASE NAME..." class="case-name-field">
+                </div>
+            </header>
+
+            <div id="home-section" class="section-container active">
+                <div class="grid-container">
+                    <!-- Left: Controls -->
+                    <section class="controls-panel">
+                        <div class="panel glass">
+                            <div class="panel-header">
+                                <span class="icon">📝</span>
+                                <h2>WITNESS TESTIMONY</h2>
+                            </div>
+                            <div class="panel-body">
+                                <textarea id="description"
+                                    placeholder="Describe facial features, scars, hair, and unique markers..."></textarea>
+
+                                <div class="structured-controls">
+                                    <div class="control-group">
+                                        <label>ESTIMATED AGE: <span id="age-val">30</span></label>
+                                        <input type="range" id="age-slider" min="10" max="90" value="30">
+                                    </div>
+
+                                    <div class="control-row">
+                                        <div class="control-item">
+                                            <label>GENDER</label>
+                                            <select id="gender-select">
+                                                <option value="male">Male</option>
+                                                <option value="female">Female</option>
+                                                <option value="other">Other</option>
+                                            </select>
+                                        </div>
+                                        <div class="control-item">
+                                            <label>ART STYLE</label>
+                                            <select id="style-select">
+                                                <option value="photorealistic">Realistic Photo</option>
+                                                <option value="pencil">Pencil Sketch</option>
+                                                <option value="forensic">Classic Forensic</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button id="generate-btn" class="btn-primary full-width">
+                                    <span class="btn-text">INITIATE RECONSTRUCTION</span>
+                                    <div class="btn-glow"></div>
+                                </button>
+
+                                <!-- New: Live Forensic Log -->
+                                <div class="log-terminal">
+                                    <div class="log-header">SYSTEM_LOG_v2.4</div>
+                                    <div id="live-logs" class="log-body">
+                                        <div class="log-line">> IDLE_STATE_ACTIVE</div>
+                                        <div class="log-line">> WAITING_FOR_INPUT...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stage Monitor -->
+                        <div id="stage-monitor" class="panel glass hidden">
+                            <div class="stages">
+                                <div class="stage" data-stage="1"><span>1</span> ANALYZING TESTIMONY</div>
+                                <div class="stage" data-stage="2"><span>2</span> MAPPING BIOMETRICS</div>
+                                <div class="stage" data-stage="3"><span>3</span> RENDERING VARIATIONS</div>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div id="main-progress" class="progress-bar"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Right: Results -->
+                    <section class="results-panel">
+                        <div class="variation-gallery">
+                            <div class="main-result glass">
+                                <div class="result-header">
+                                    <span>PRIMARY VARIATION</span>
+                                    <span id="confidence-badge" class="badge">--% CONFIDENCE</span>
+                                </div>
+                                <div class="image-wrapper">
+                                    <img id="primary-image" src="" class="hidden">
+                                    <div id="image-placeholder" class="placeholder">
+                                        <div class="face-loader">
+                                            <div class="loader-visual">
+                                                <div class="loader-circle outer"></div>
+                                                <div class="loader-circle inner"></div>
+                                                <div class="face-icon">👤</div>
+                                            </div>
+                                            <div class="status-msg">PROCESSING_FACE...</div>
+                                        </div>
+                                    </div>
+                                    <!-- Biometric HUD Overlay -->
+                                    <div id="hud-overlay" class="hud-overlay hidden">
+                                        <div class="corner top-left"></div>
+                                        <div class="corner top-right"></div>
+                                        <div class="corner bottom-left"></div>
+                                        <div class="corner bottom-right"></div>
+                                        <div class="scan-bar"></div>
+                                        <div class="biometric-data">
+                                            <div class="data-item"><span>MATCH</span><span class="val">VERIFIED</span>
+                                            </div>
+                                            <div class="data-item"><span>SYMMETRY</span><span class="val">98.2%</span>
+                                            </div>
+                                            <div class="data-item"><span>DENSITY</span><span class="val">OPTIMAL</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="side-variations">
+                                <div class="var-slot glass" data-index="1">
+                                    <span class="slot-label">VAR 01</span>
+                                    <div class="slot-image">
+                                        <p>?</p>
+                                    </div>
+                                </div>
+                                <div class="var-slot glass" data-index="2">
+                                    <span class="slot-label">VAR 02</span>
+                                    <div class="slot-image">
+                                        <p>?</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="analysis-report" class="panel glass hidden">
+                            <div class="panel-header">
+                                <span class="icon">📜</span>
+                                <h2>AI FORENSIC ANALYSIS</h2>
+                            </div>
+                            <div class="panel-body">
+                                <div class="report-content">
+                                    <p id="ai-report-text">Reconstructing profile...</p>
+                                    <div class="report-meta">
+                                        <span id="timestamp-val"></span>
+                                        <div class="action-buttons">
+                                            <button id="new-case-btn" class="btn-ghost">NEW CASE</button>
+                                            <button id="compare-btn" class="btn-primary">COMPARE TO DATABASE</button>
+                                            <button id="download-case-btn" class="btn-ghost">DOWNLOAD CASE FILE</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Database Match Panel (Existing Feature Integrated) -->
+                        <!-- Database Match Panel (Existing Feature Integrated) -->
+                        <div id="matches-panel" class="panel glass hidden">
+                            <div class="panel-header">
+                                <span class="icon">📊</span>
+                                <h2>DATABASE CROSS-REFERENCE</h2>
+                            </div>
+                            <div id="matches-list" class="matches-compact"></div>
+                        </div>
+                    </section> <!-- End results-panel -->
+                </div> <!-- End grid-container -->
+            </div> <!-- End home-section -->
+
+            <div id="cases-section" class="section-container hidden">
+                <div class="panel glass">
+                    <div class="panel-header">
+                        <div class="header-main">
+                            <span class="icon">📁</span>
+                            <h2>NATIONAL FORENSIC DATABASE</h2>
+                        </div>
+                        <div class="header-meta">
+                            <span class="badge">SECURE ACCESS</span>
+                            <span id="case-count">ENTRIES: 0</span>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="database-filters">
+                            <input type="text" id="case-search" placeholder="SEARCH BY NAME, ID, OR OFFENSE..."
+                                class="search-input">
+                        </div>
+                        <div id="cases-grid" class="forensic-grid">
+                            <!-- Cases will be rendered here dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="contact-section" class="section-container hidden">
+                <div class="panel glass contact-panel">
+                    <div class="panel-header">
+                        <div class="header-main">
+                            <span class="icon">🏛️</span>
+                            <h2>CONTACT FORENSIC DIVISION</h2>
+                        </div>
+                        <span class="badge">SECURE TERMINAL</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="contact-description">
+                            <p>Official department for managing AI-assisted facial identification cases and digital
+                                suspect reconstructions.</p>
+                        </div>
+
+                        <div class="contact-layout">
+                            <!-- Official Contact Card -->
+                            <div class="official-card glass">
+                                <div class="card-glow"></div>
+                                <div class="dept-header">
+                                    <div class="dept-logo">🛡️</div>
+                                    <div class="dept-title">
+                                        <h3>Digital Forensic Identification Unit</h3>
+                                        <span>Central Crime Analysis Bureau</span>
+                                    </div>
+                                </div>
+                                <div class="dept-info">
+                                    <div class="info-row">
+                                        <label><span class="icon">👮</span> OFFICER</label>
+                                        <span>Chief Investigation Officer</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <label><span class="icon">📧</span> EMAIL</label>
+                                        <span>investigations@facetraceai.gov</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <label><span class="icon">📞</span> PHONE</label>
+                                        <span>+1 (800) 452-7841</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <label><span class="icon">📍</span> LOCATION</label>
+                                        <span>Washington DC, CCAB Headquarters</span>
+                                    </div>
+                                    <div class="info-row emergency">
+                                        <label><span class="icon">🚨</span> EMERGENCY HOTLINE</label>
+                                        <span>+1 (800) 911-TRACE</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Secure Contact Form -->
+                            <div class="inquiry-form glass">
+                                <div class="form-header">
+                                    <span class="icon">📝</span>
+                                    <h3>SECURE INQUIRY FORM</h3>
+                                </div>
+                                <form id="forensic-contact-form">
+                                    <div class="form-row">
+                                        <div class="input-group">
+                                            <label>CASE ID</label>
+                                            <input type="text" placeholder="CRM-XXXX" class="search-input">
+                                        </div>
+                                        <div class="input-group">
+                                            <label>FULL NAME</label>
+                                            <input type="text" placeholder="AGENT NAME" class="search-input">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="input-group">
+                                            <label>SECURE EMAIL</label>
+                                            <input type="email" placeholder="agent@agency.gov" class="search-input">
+                                        </div>
+                                        <div class="input-group">
+                                            <label>SUBJECT</label>
+                                            <select class="search-input">
+                                                <option>CASE DATA REQUEST</option>
+                                                <option>BIOMETRIC DISCREPANCY</option>
+                                                <option>SYSTEM ACCESS ISSUE</option>
+                                                <option>URGENT IDENTIFICATION</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>ENCRYPTED MESSAGE</label>
+                                        <textarea placeholder="PROVIDE DETAILED CASE INFORMATION..."
+                                            class="search-input" style="height: 120px;"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn-primary full-width">SUBMIT SECURE INQUIRY</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>
