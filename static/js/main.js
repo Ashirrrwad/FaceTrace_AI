@@ -56,13 +56,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const homeNav = document.querySelector('[data-section="home"]');
         if (homeNav) homeNav.click();
 
- 
         primaryImage.src = data.image;
         primaryImage.classList.remove('hidden');
         imagePlaceholder.classList.add('hidden');
         hudOverlay.classList.remove('hidden');
         
-    
         descriptionInput.value = data.description;
         caseIdDisplay.textContent = data.id;
         caseNameInput.value = data.name || '';
@@ -71,10 +69,23 @@ document.addEventListener('DOMContentLoaded', () => {
         genderSelect.value = data.traits.gender;
         styleSelect.value = data.traits.style;
         
-       
         aiReportText.textContent = data.report;
         confidenceBadge.textContent = `${data.confidence}% CONFIDENCE`;
         analysisReport.classList.remove('hidden');
+        
+        // Handle warning banner on restore
+        const oldWarning = document.querySelector('.simulated-warning');
+        if (oldWarning) oldWarning.remove();
+
+        if (data.is_simulated) {
+            imagePlaceholder.parentElement.classList.add('simulated');
+            const warningDiv = document.createElement('div');
+            warningDiv.className = 'simulated-warning';
+            warningDiv.innerHTML = `⚠️ <strong>CRITICAL LOG: ARCHIVED CASE (SIMULATED FALLBACK)</strong><br>This sketch was reconstructed using the offline fallback biometric matching protocol.`;
+            imagePlaceholder.parentElement.parentElement.appendChild(warningDiv);
+        } else {
+            imagePlaceholder.parentElement.classList.remove('simulated');
+        }
         
         addLog(`ARCHIVE RESTORED: ${data.id}`);
     };
@@ -320,6 +331,26 @@ document.addEventListener('DOMContentLoaded', () => {
             aiReportText.textContent = data.report;
             analysisReport.classList.remove('hidden');
             
+            // Remove any pre-existing simulated warning
+            const oldWarning = document.querySelector('.simulated-warning');
+            if (oldWarning) oldWarning.remove();
+
+            if (data.is_simulated) {
+                addLog("CRITICAL: API THRESHOLD EXCEEDED", true);
+                addLog("ENGAGING OFFLINE MATCHING PROTOCOL...", true);
+                imagePlaceholder.parentElement.classList.add('simulated');
+                
+                // Add simulated warning element
+                const warningDiv = document.createElement('div');
+                warningDiv.className = 'simulated-warning';
+                warningDiv.innerHTML = `⚠️ <strong>CRITICAL LOG: API TERMINATED (LIMIT EXCEEDED / OFFLINE)</strong><br>Engaging local fallback database matching. Suspect correlation established via offline biometric signatures.`;
+                imagePlaceholder.parentElement.parentElement.appendChild(warningDiv);
+            } else {
+                addLog("RECONSTRUCTION COMPLETE: IDENTITY VERIFIED", true);
+                imagePlaceholder.parentElement.classList.remove('simulated');
+            }
+            hudOverlay.classList.remove('hidden');
+
             const newCase = {
                 id: currentCaseId,
                 name: caseNameInput.value.trim(),
@@ -328,21 +359,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 traits: {...traits},
                 report: data.report,
                 confidence: data.confidence,
-                seed: data.master_seed
+                seed: data.master_seed,
+                is_simulated: data.is_simulated
             };
             
             currentCaseData = newCase;
             addToHistory(newCase);
-
-            if (data.is_simulated) {
-                addLog("CRITICAL: API THRESHOLD EXCEEDED", true);
-                addLog("ENGAGING OFFLINE MATCHING PROTOCOL...", true);
-                imagePlaceholder.parentElement.classList.add('simulated');
-            } else {
-                addLog("RECONSTRUCTION COMPLETE: IDENTITY VERIFIED", true);
-                imagePlaceholder.parentElement.classList.remove('simulated');
-            }
-            hudOverlay.classList.remove('hidden');
 
         } catch (error) {
             console.error(error);
@@ -434,7 +456,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             currentCaseData = null;
             
-            
             descriptionInput.value = '';
             ageSlider.value = 30;
             ageVal.textContent = 30;
@@ -442,8 +463,12 @@ document.addEventListener('DOMContentLoaded', () => {
             styleSelect.selectedIndex = 0;
             caseNameInput.value = '';
             caseIdDisplay.textContent = 'CASE: #PENDING';
+            
+            // Clear warning banner and class list
+            const oldWarning = document.querySelector('.simulated-warning');
+            if (oldWarning) oldWarning.remove();
+            imagePlaceholder.parentElement.classList.remove('simulated');
 
-           
             primaryImage.src = '';
             primaryImage.classList.add('hidden');
             imagePlaceholder.classList.remove('hidden');
@@ -451,7 +476,6 @@ document.addEventListener('DOMContentLoaded', () => {
             analysisReport.classList.add('hidden');
             if (matchesPanel) matchesPanel.classList.add('hidden');
             
-          
             const sideSlots = document.querySelectorAll('.var-slot');
             sideSlots.forEach(slot => {
                 const imgContainer = slot.querySelector('.slot-image');
