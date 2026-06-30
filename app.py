@@ -53,10 +53,10 @@ def llm_refine_prompt(description_data):
     style = description_data.get('style', 'pencil sketch')
 
     style_map = {
-        "pencil sketch": "pencil sketch, graphite drawing, black and white, forensic hand-drawn, charcoal lines",
-        "photorealistic": "RAW photo, photorealistic, hyperrealistic, 8k uhd, sharp focus, professional lighting",
-        "charcoal": "charcoal drawing, forensic art, rough texture, black and white, smudged shading",
-        "digital art": "digital forensic portrait, clean illustration, sharp lines"
+        "pencil": "pencil sketch, graphite drawing, black and white, forensic hand-drawn, charcoal lines, scanned sketch",
+        "charcoal": "charcoal drawing, forensic art, rough texture, black and white, smudged shading, heavy contrast",
+        "digital": "digital forensic portrait, clean digital vector illustration, sharp lines, detailed digital sketch",
+        "photorealistic": "front view mugshot, RAW photo, photorealistic, hyperrealistic, 8k uhd, sharp focus, professional police lighting, camera flash"
     }
     style_suffix = style_map.get(style.lower(), "forensic composite sketch, pencil drawing")
 
@@ -305,7 +305,7 @@ def generate_sketch():
         
         if matches and matches[0][0] > 10:
             primary_score, primary_suspect = matches[0]
-            primary_img = primary_suspect.get('image_url', '/static/images/cases/crm-7721_sketch.png')
+            primary_img = primary_suspect.get('sketch_url', primary_suspect.get('image_url', '/static/images/cases/crm-7721_sketch.png'))
             reverse_report = (
                 f"BIOMETRIC SIMULATION ENGAGED. Closest database match is suspect {primary_suspect['name']} "
                 f"({primary_suspect['id']}) with {primary_score}% similarity. Offense: {primary_suspect.get('offense', 'Unknown')}."
@@ -315,13 +315,13 @@ def generate_sketch():
             # Select variation images from other suspects
             var_images = []
             for score, person in matches[1:3]:
-                var_images.append(person.get('image_url'))
+                var_images.append(person.get('sketch_url', person.get('image_url')))
                 
             # Fill variations to ensure we have at least 2 variation images
             for person in CRIMINAL_DB:
                 if len(var_images) >= 2:
                     break
-                p_url = person.get('image_url')
+                p_url = person.get('sketch_url', person.get('image_url'))
                 if p_url != primary_img and p_url not in var_images:
                     var_images.append(p_url)
                     
@@ -332,8 +332,11 @@ def generate_sketch():
             var_images = ['/static/images/cases/crm-9904_sketch.png', '/static/images/cases/crm-1250_sketch.png']
             
             if len(CRIMINAL_DB) >= 3:
-                primary_img = CRIMINAL_DB[0].get('image_url', primary_img)
-                var_images = [CRIMINAL_DB[1].get('image_url', var_images[0]), CRIMINAL_DB[2].get('image_url', var_images[1])]
+                primary_img = CRIMINAL_DB[0].get('sketch_url', CRIMINAL_DB[0].get('image_url', primary_img))
+                var_images = [
+                    CRIMINAL_DB[1].get('sketch_url', CRIMINAL_DB[1].get('image_url', var_images[0])),
+                    CRIMINAL_DB[2].get('sketch_url', CRIMINAL_DB[2].get('image_url', var_images[1]))
+                ]
                 
             images = [primary_img] + var_images
             reverse_report = "BIOMETRIC SIMULATION ENGAGED. General suspect profile generated matching basic age and gender traits."

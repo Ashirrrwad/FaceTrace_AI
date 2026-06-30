@@ -150,8 +150,10 @@ document.addEventListener('DOMContentLoaded', () => {
             card.innerHTML = `
                 <div class="card-status ${c.status.toLowerCase().replace(' ', '-')}">${c.status}</div>
                 <div class="card-inner">
-                    <div class="card-visual">
-                        <img src="${c.image_url}" alt="${c.name}">
+                    <div class="card-visual double-image">
+                        <img src="${c.sketch_url || c.image_url}" class="card-sketch" alt="${c.name} Sketch">
+                        <img src="${c.photo_url}" class="card-photo" alt="${c.name} Mugshot">
+                        <div class="image-mode-badge">SKETCH ⇄ MUGSHOT</div>
                         <div class="visual-overlay"></div>
                     </div>
                     <div class="card-content">
@@ -405,9 +407,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 data.matches.forEach(match => {
                     const item = document.createElement('div');
                     item.className = 'match-card glass';
-                    item.style.cssText = 'min-width: 200px; padding: 10px; border: 1px solid rgba(0, 242, 255, 0.2); border-radius: 8px; margin-bottom: 10px;';
+                    item.style.cssText = 'min-width: 200px; padding: 10px; border: 1px solid rgba(0, 242, 255, 0.2); border-radius: 8px; margin-bottom: 10px; position: relative;';
                     item.innerHTML = `
-                        <img src="${match.image_url}" style="width:100%; height:120px; object-fit:cover; border-radius:4px;">
+                        <div class="match-card-visual">
+                            <img src="${match.sketch_url || match.image_url}" class="match-sketch" alt="${match.name} Sketch">
+                            <img src="${match.photo_url}" class="match-photo" alt="${match.name} Mugshot">
+                            <div class="match-mode-badge">SKETCH ⇄ MUGSHOT</div>
+                        </div>
                         <div style="margin-top:8px;">
                             <h4 style="font-size:0.8rem; color:var(--primary-neon);">${match.name}</h4>
                             <div class="match-bar-container" style="height:4px; background:rgba(255,255,255,0.1); margin:5px 0;">

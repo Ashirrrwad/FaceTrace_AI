@@ -1242,3 +1242,121 @@ select {
         grid-template-columns: 1fr;
     }
 }
+
+/* --- Double Image Card / Hover Crossfade Styles --- */
+.card-visual.double-image {
+    position: relative;
+    background: #000;
+    overflow: hidden;
+    height: 100%;
+}
+
+.card-visual.double-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.card-visual.double-image img.card-sketch {
+    opacity: 1;
+    z-index: 2;
+}
+
+.card-visual.double-image img.card-photo {
+    opacity: 0;
+    z-index: 1;
+}
+
+/* Hover effect on forensic card flips visibility */
+.forensic-card:hover .card-visual.double-image img.card-sketch {
+    opacity: 0;
+}
+
+.forensic-card:hover .card-visual.double-image img.card-photo {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* Hover badges overlay on the visual */
+.image-mode-badge {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    padding: 2px 6px;
+    font-size: 0.55rem;
+    font-family: var(--font-mono);
+    color: var(--primary-neon);
+    background: rgba(0, 0, 0, 0.75);
+    border: 1px solid rgba(0, 242, 255, 0.3);
+    border-radius: 4px;
+    z-index: 5;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.forensic-card:hover .image-mode-badge {
+    color: var(--accent-amber);
+    border-color: rgba(255, 180, 0, 0.5);
+}
+
+/* Match card double-image sizing and crossfade */
+.match-card-visual {
+    position: relative;
+    width: 100%;
+    height: 120px;
+    overflow: hidden;
+    border-radius: 4px;
+    background: #000;
+}
+
+.match-card-visual img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.match-card-visual img.match-sketch {
+    opacity: 1;
+    z-index: 2;
+}
+
+.match-card-visual img.match-photo {
+    opacity: 0;
+    z-index: 1;
+}
+
+.match-card:hover .match-card-visual img.match-sketch {
+    opacity: 0;
+}
+
+.match-card:hover .match-card-visual img.match-photo {
+    opacity: 1;
+}
+
+.match-mode-badge {
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    padding: 1px 4px;
+    font-size: 0.5rem;
+    font-family: var(--font-mono);
+    color: var(--primary-neon);
+    background: rgba(0, 0, 0, 0.75);
+    border: 1px solid rgba(0, 242, 255, 0.3);
+    border-radius: 2px;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.match-card:hover .match-mode-badge {
+    color: var(--accent-amber);
+    border-color: rgba(255, 180, 0, 0.5);
+}
