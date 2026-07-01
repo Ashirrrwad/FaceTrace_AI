@@ -1,134 +1,150 @@
-[
+{
+  "suspects": [
     {
-        "id": "CRM-7721",
-        "name": "Marcus Vane",
-        "traits": {
-            "gender": "male",
-            "age_group": "30s",
-            "hair": "messy",
-            "facial_hair": "beard",
-            "accessory": "hoodie"
-        },
-        "description": "Male, late 30s, rugged beard, intense dark eyes, short messy hair, wearing a grey hoodie.",
-        "image_url": "/static/images/cases/crm-7721_sketch.png",
-        "sketch_url": "/static/images/cases/crm-7721_sketch.png",
-        "photo_url": "/static/images/cases/crm-7721.png",
-        "last_seen": "Sector 4 Warehouse District",
-        "offense": "High-value tech theft",
-        "age": 37,
-        "gender": "Male",
-        "address": "943 Quantum Lane, The Underbelly",
-        "date_created": "2025-08-27",
-        "status": "WANTED"
+      "id": "CRM-7721",
+      "name": "Marcus Vane",
+      "traits": {
+        "gender": "male",
+        "age_group": "30s",
+        "hair": "messy",
+        "facial_hair": "beard",
+        "accessory": "hoodie"
+      },
+      "description": "Male, late 30s, rugged beard, intense dark eyes, short messy hair, wearing a grey hoodie.",
+      "image_url": "/static/images/cases/crm-7721_sketch.png",
+      "sketch_url": "/static/images/cases/crm-7721_sketch.png",
+      "photo_url": "/static/images/cases/crm-7721.png",
+      "last_seen": "Sector 4 Warehouse District",
+      "offense": "High-value tech theft",
+      "age": 37,
+      "gender": "Male",
+      "address": "943 Quantum Lane, The Underbelly",
+      "date_created": "2025-08-27",
+      "status": "WANTED"
     },
     {
-        "id": "CRM-9904",
-        "name": "Elena Ross",
-        "traits": {
-            "gender": "female",
-            "age_group": "20s",
-            "hair": "blue",
-            "facial_hair": "none",
-            "accessory": "piercing"
-        },
-        "description": "Female, early 20s, bright blue hair, nose piercing, sharp jawline, wearing a leather jacket.",
-        "image_url": "/static/images/cases/crm-9904_sketch.png",
-        "sketch_url": "/static/images/cases/crm-9904_sketch.png",
-        "photo_url": "/static/images/cases/crm-9904.png",
-        "last_seen": "Cyber City Transit Hub",
-        "offense": "Data breach, hacking",
-        "age": 23,
-        "gender": "Female",
-        "address": "310 Silicon Boulevard, The Underbelly",
-        "date_created": "2026-04-21",
-        "status": "AT LARGE"
+      "id": "CRM-9904",
+      "name": "Elena Ross",
+      "traits": {
+        "gender": "female",
+        "age_group": "20s",
+        "hair": "blue",
+        "facial_hair": "none",
+        "accessory": "piercing"
+      },
+      "description": "Female, early 20s, bright blue hair, nose piercing, sharp jawline, wearing a leather jacket.",
+      "image_url": "/static/images/cases/crm-9904_sketch.png",
+      "sketch_url": "/static/images/cases/crm-9904_sketch.png",
+      "photo_url": "/static/images/cases/crm-9904.png",
+      "last_seen": "Cyber City Transit Hub",
+      "offense": "Data breach, hacking",
+      "age": 23,
+      "gender": "Female",
+      "address": "310 Silicon Boulevard, The Underbelly",
+      "date_created": "2026-04-21",
+      "status": "AT LARGE"
     },
     {
-        "id": "CRM-1250",
-        "name": "Dr. Aris Thorne",
-        "traits": {
-            "gender": "male",
-            "age_group": "50s",
-            "hair": "balding",
-            "facial_hair": "none",
-            "accessory": "glasses"
-        },
-        "description": "Male, 50s, thin wire glasses, balding top, white shirt, focused expression.",
-        "image_url": "/static/images/cases/crm-1250_sketch.png",
-        "sketch_url": "/static/images/cases/crm-1250_sketch.png",
-        "photo_url": "/static/images/cases/crm-1250.png",
-        "last_seen": "Upper East Spire Laboratories",
-        "offense": "Corporate Espionage",
-        "age": 53,
-        "gender": "Male",
-        "address": "217 Data Stream Way, The Underbelly",
-        "date_created": "2026-04-02",
-        "status": "WANTED"
+      "id": "CRM-1250",
+      "name": "Dr. Aris Thorne",
+      "traits": {
+        "gender": "male",
+        "age_group": "50s",
+        "hair": "balding",
+        "facial_hair": "none",
+        "accessory": "glasses"
+      },
+      "description": "Male, 50s, thin wire glasses, balding top, white shirt, focused expression.",
+      "image_url": "/static/images/cases/crm-1250_sketch.png",
+      "sketch_url": "/static/images/cases/crm-1250_sketch.png",
+      "photo_url": "/static/images/cases/crm-1250.png",
+      "last_seen": "Upper East Spire Laboratories",
+      "offense": "Corporate Espionage",
+      "age": 53,
+      "gender": "Male",
+      "address": "217 Data Stream Way, The Underbelly",
+      "date_created": "2026-04-02",
+      "status": "WANTED"
     },
     {
-        "id": "CRM-4432",
-        "name": "Jaxen Kael",
-        "traits": {
-            "gender": "male",
-            "age_group": "40s",
-            "hair": "buzz cut",
-            "facial_hair": "none",
-            "accessory": "scar"
-        },
-        "description": "Male, 40s, deep scar on left cheek, buzz cut, aggressive eyebrows, black denim jacket.",
-        "image_url": "/static/images/cases/crm-4432_sketch.png",
-        "sketch_url": "/static/images/cases/crm-4432_sketch.png",
-        "photo_url": "/static/images/cases/crm-4432.png",
-        "last_seen": "Neon Alley Nightclub",
-        "offense": "Illegal Bio-mod distribution",
-        "age": 40,
-        "gender": "Male",
-        "address": "232 Binary Road, Industrial Perimeter",
-        "date_created": "2026-04-13",
-        "status": "MISSING"
+      "id": "CRM-4432",
+      "name": "Jaxen Kael",
+      "traits": {
+        "gender": "male",
+        "age_group": "40s",
+        "hair": "buzz cut",
+        "facial_hair": "none",
+        "accessory": "scar"
+      },
+      "description": "Male, 40s, deep scar on left cheek, buzz cut, aggressive eyebrows, black denim jacket.",
+      "image_url": "/static/images/cases/crm-4432_sketch.png",
+      "sketch_url": "/static/images/cases/crm-4432_sketch.png",
+      "photo_url": "/static/images/cases/crm-4432.png",
+      "last_seen": "Neon Alley Nightclub",
+      "offense": "Illegal Bio-mod distribution",
+      "age": 40,
+      "gender": "Male",
+      "address": "232 Binary Road, Industrial Perimeter",
+      "date_created": "2026-04-13",
+      "status": "MISSING"
     },
     {
-        "id": "CRM-6112",
-        "name": "Sarah Miller",
-        "traits": {
-            "gender": "female",
-            "age_group": "30s",
-            "hair": "ponytail",
-            "facial_hair": "none",
-            "accessory": "tattoos"
-        },
-        "description": "Female, 30s, sleeve tattoos on both arms, green eyes, ponytail, wearing a tank top.",
-        "image_url": "/static/images/cases/crm-6112_sketch.png",
-        "sketch_url": "/static/images/cases/crm-6112_sketch.png",
-        "photo_url": "/static/images/cases/crm-6112.png",
-        "last_seen": "Downtown Tattoo Parlor",
-        "offense": "Forgery, Identity Theft",
-        "age": 33,
-        "gender": "Female",
-        "address": "936 Neon Alley, Virtual Plaza",
-        "date_created": "2025-05-29",
-        "status": "UNDER INVESTIGATION"
+      "id": "CRM-6112",
+      "name": "Sarah Miller",
+      "traits": {
+        "gender": "female",
+        "age_group": "30s",
+        "hair": "ponytail",
+        "facial_hair": "none",
+        "accessory": "tattoos"
+      },
+      "description": "Female, 30s, sleeve tattoos on both arms, green eyes, ponytail, wearing a tank top.",
+      "image_url": "/static/images/cases/crm-6112_sketch.png",
+      "sketch_url": "/static/images/cases/crm-6112_sketch.png",
+      "photo_url": "/static/images/cases/crm-6112.png",
+      "last_seen": "Downtown Tattoo Parlor",
+      "offense": "Forgery, Identity Theft",
+      "age": 33,
+      "gender": "Female",
+      "address": "936 Neon Alley, Virtual Plaza",
+      "date_created": "2025-05-29",
+      "status": "UNDER INVESTIGATION"
     },
     {
-        "id": "CRM-2088",
-        "name": "Victor Kray",
-        "traits": {
-            "gender": "male",
-            "age_group": "60s",
-            "hair": "white",
-            "facial_hair": "beard",
-            "accessory": "eyepatch"
-        },
-        "description": "Male, elderly, 60s, white beard, eyepatch on right eye, wearing a trench coat, stern look.",
-        "image_url": "/static/images/cases/crm-2088_sketch.png",
-        "sketch_url": "/static/images/cases/crm-2088_sketch.png",
-        "photo_url": "/static/images/cases/crm-2088.png",
-        "last_seen": "Old Harbor Docks",
-        "offense": "International Smuggling",
-        "age": 64,
-        "gender": "Male",
-        "address": "922 Data Stream Way, Virtual Plaza",
-        "date_created": "2026-03-18",
-        "status": "WANTED"
+      "id": "CRM-2088",
+      "name": "Victor Kray",
+      "traits": {
+        "gender": "male",
+        "age_group": "60s",
+        "hair": "white",
+        "facial_hair": "beard",
+        "accessory": "eyepatch"
+      },
+      "description": "Male, elderly, 60s, white beard, eyepatch on right eye, wearing a trench coat, stern look.",
+      "image_url": "/static/images/cases/crm-2088_sketch.png",
+      "sketch_url": "/static/images/cases/crm-2088_sketch.png",
+      "photo_url": "/static/images/cases/crm-2088.png",
+      "last_seen": "Old Harbor Docks",
+      "offense": "International Smuggling",
+      "age": 64,
+      "gender": "Male",
+      "address": "922 Data Stream Way, Virtual Plaza",
+      "date_created": "2026-03-18",
+      "status": "WANTED"
     }
-]
+  ],
+  "generated": {
+    "#1": {
+      "description": "Male, late 40s. Gaunt face with prominent, sharp cheekbones and a squared jaw. He has a receding hairline with short, wavy hair. Heavy-set brow with thick, bushy eyebrows over deep-set, narrowed eyes. His nose is slightly crooked, leaning to the left. Thin lips with a slight frown. He has a visible, jagged scar on his right cheekbone and a few days of rough stubble.",
+      "image_path": "/static/images/cases/#1_sketch.png"
+    },
+    "7906-WYV": {
+      "description": "Female, early 30s. Round face with a soft, rounded chin. Large, wide-set eyes with thin, highly arched eyebrows. Small, upturned nose. Very full, thick lips. She is wearing thick-rimmed, square glasses. Her hair is pulled back tightly. She has a small mole on the left side of her chin and prominent dark circles under her eyes.",
+      "image_path": "/static/images/cases/7906-wyv_sketch.png"
+    },
+    "4543-7QU": {
+      "description": "Male, late 40s. Gaunt face with prominent, sharp cheekbones and a squared jaw. He has a receding hairline with short, wavy hair. Heavy-set brow with thick, bushy eyebrows over deep-set, narrowed eyes. His nose is slightly crooked, leaning to the left. Thin lips with a slight frown. He has a visible, jagged scar on his right cheekbone and a few days of rough stubble.",
+      "image_path": "/static/images/cases/4543-7qu_primary.png"
+    }
+  }
+}

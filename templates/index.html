@@ -66,6 +66,11 @@
                                 <h2>WITNESS TESTIMONY</h2>
                             </div>
                             <div class="panel-body">
+                                <div class="control-group" style="margin-bottom: 10px;">
+                                    <label style="display:block; margin-bottom:4px;">CASE ID</label>
+                                    <input type="text" id="case-id-input" placeholder="e.g. CRM-0001" class="search-input" style="width:100%;">
+                                </div>
+
                                 <textarea id="description"
                                     placeholder="Describe facial features, scars, hair, and unique markers..."></textarea>
 
@@ -135,6 +140,8 @@
                                 </div>
                                 <div class="image-wrapper">
                                     <img id="primary-image" src="" class="hidden">
+                                    <!-- spec-required alias: sketch-display mirrors primary-image -->
+                                    <img id="sketch-display" src="" class="hidden" alt="Generated forensic sketch" style="display:none;">
                                     <div id="image-placeholder" class="placeholder">
                                         <div class="face-loader">
                                             <div class="loader-visual">

@@ -9,11 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const stageMonitor = document.getElementById('stage-monitor');
     const progressBar = document.getElementById('main-progress');
     const primaryImage = document.getElementById('primary-image');
+    const sketchDisplay = document.getElementById('sketch-display');   // spec-required alias
     const imagePlaceholder = document.getElementById('image-placeholder');
     const confidenceBadge = document.getElementById('confidence-badge');
     const aiReportText = document.getElementById('ai-report-text');
     const historyList = document.getElementById('history-list');
     const caseNameInput = document.getElementById('case-name-input');
+    const caseIdInput = document.getElementById('case-id-input');       // new Case ID field
     const caseIdDisplay = document.getElementById('current-case-id');
     const analysisReport = document.getElementById('analysis-report');
     const hudOverlay = document.getElementById('hud-overlay');
@@ -261,15 +263,19 @@ document.addEventListener('DOMContentLoaded', () => {
             style: styleSelect.value
         };
 
-        const currentCaseId = generateCaseId();
-        caseIdDisplay.textContent = currentCaseId;
+        // Determine case_id: use the input field value, or fall back to an auto-generated one
+        const inputCaseId = caseIdInput ? caseIdInput.value.trim() : '';
+        const currentCaseId = inputCaseId || generateCaseId().replace('CASE: #', '');
+        caseIdDisplay.textContent = `CASE: #${currentCaseId}`;
+        if (caseIdInput && !inputCaseId) caseIdInput.value = currentCaseId;
 
         generateBtn.disabled = true;
-        generateBtn.textContent = 'RECONSTRUCTING...';
+        generateBtn.querySelector('.btn-text').textContent = 'GENERATING...';
         stageMonitor.classList.remove('hidden');
         analysisReport.classList.add('hidden');
         imagePlaceholder.classList.remove('hidden');
         primaryImage.classList.add('hidden');
+        if (sketchDisplay) sketchDisplay.classList.add('hidden');
         hudOverlay.classList.add('hidden');
         
        
@@ -291,43 +297,74 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/generate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ description, traits })
+                body: JSON.stringify({ case_id: currentCaseId, description, traits })
             });
 
             const data = await response.json();
-            if (data.error) throw new Error(data.error);
-            if (!data.images || data.images.length === 0) throw new Error("No images generated");
+            if (!response.ok || data.error) throw new Error(data.error || `Server error ${response.status}`);
+            if (!data.images || data.images.length === 0) throw new Error('No images generated');
 
             setStage(3);
             addLog("RECONSTRUCTING FACIAL LATTICE...");
             addLog(`BIOMETRIC LOCK ESTABLISHED: SEED_${data.master_seed || 'N/A'}`);
             await new Promise(r => setTimeout(r, 1000));
 
-            primaryImage.src = data.images[0];
+            // Cache-bust to prevent browser serving a stale PNG for the same case_id
+            const ts = Date.now();
+
+            // --- Primary image ---
+            const primaryUrl = (data.primary_url || data.image_url || data.images?.[0]) + `?t=${ts}`;
+            primaryImage.src = primaryUrl;
             primaryImage.classList.remove('hidden');
             imagePlaceholder.classList.add('hidden');
-            
+
+            // Keep spec-required sketch-display in sync
+            if (sketchDisplay) {
+                sketchDisplay.src = primaryUrl;
+                sketchDisplay.classList.remove('hidden');
+            }
+
+            // --- Variation slots (VAR 01 / VAR 02) ---
+            // Build the two variation URLs from the named response keys,
+            // falling back to data.images[1/2] if named keys are absent (simulation path).
+            const varUrls = [
+                data.var1_url || data.images?.[1] || null,
+                data.var2_url || data.images?.[2] || null,
+            ];
+
             const sideSlots = document.querySelectorAll('.var-slot');
-            const variations = data.images.slice(1);
-            
-            variations.forEach((img, idx) => {
-                if (sideSlots[idx]) {
-                    const slotImgContainer = sideSlots[idx].querySelector('.slot-image');
-                    slotImgContainer.innerHTML = `<img src="${img}" class="variation-img identity-locked">`;
-                    
-                    sideSlots[idx].onclick = () => {
-                        const mainImg = document.getElementById('primary-image');
-                        const clickedImg = slotImgContainer.querySelector('img');
-                        
-                        if (mainImg && clickedImg) {
-                            const tempSrc = mainImg.src;
-                            mainImg.src = clickedImg.src;
-                            clickedImg.src = tempSrc;
-                            addLog(`SWITCHING VIEW: VARIATION ${idx + 1} (IDENTITY PRESERVED)`);
-                        }
-                    };
+            varUrls.forEach((rawUrl, idx) => {
+                const slot = sideSlots[idx];
+                if (!slot) return;
+
+                const slotImgContainer = slot.querySelector('.slot-image');
+                if (!rawUrl) {
+                    // No image for this slot — show the placeholder
+                    slotImgContainer.innerHTML = '<p>?</p>';
+                    slot.onclick = null;
+                    return;
                 }
+
+                const varUrl = rawUrl + `?t=${ts}`;
+                // Replace the "?" placeholder with a real image
+                slotImgContainer.innerHTML = `<img src="${varUrl}" class="variation-img" alt="Variation ${idx + 1}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+
+                // Swap with primary on click
+                slot.style.cursor = 'pointer';
+                slot.onclick = () => {
+                    const mainImg = document.getElementById('primary-image');
+                    const clickedImg = slotImgContainer.querySelector('img');
+                    if (mainImg && clickedImg) {
+                        const tempSrc = mainImg.src;
+                        mainImg.src = clickedImg.src;
+                        clickedImg.src = tempSrc;
+                        if (sketchDisplay) sketchDisplay.src = mainImg.src;
+                        addLog(`SWITCHING VIEW: VARIATION ${idx + 1} (IDENTITY PRESERVED)`);
+                    }
+                };
             });
+
+            addLog(`VARIATIONS RENDERED: ${varUrls.filter(Boolean).length}/2 SLOTS POPULATED`, true);
 
             confidenceBadge.textContent = `${data.confidence}% CONFIDENCE`;
             aiReportText.textContent = data.report;
@@ -370,11 +407,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error(error);
-            alert('Forensic analysis failed. System offline or API limit reached.');
-            addLog("SYSTEM ERROR: INFERENCE FAILED", true);
+            alert(`Forensic analysis failed: ${error.message || 'System offline or API limit reached.'}`);
+            addLog('SYSTEM ERROR: INFERENCE FAILED', true);
         } finally {
             generateBtn.disabled = false;
-            generateBtn.textContent = 'INITIATE RECONSTRUCTION';
+            generateBtn.querySelector('.btn-text').textContent = 'INITIATE RECONSTRUCTION';
             setTimeout(() => {
                 stageMonitor.classList.add('hidden');
                 progressBar.style.width = '0%';
