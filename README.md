@@ -4,257 +4,538 @@
 
 ### AI-Powered Forensic Suspect Sketch Generator
 
-*Generate police-style composite sketches from verbal witness descriptions using state-of-the-art AI image models.*
+Generate realistic forensic composite sketches from witness descriptions using Large Language Models (LLMs) and AI image generation.
 
-[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![Flask](https://img.shields.io/badge/Flask-2.x-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com)
-[![Stability AI](https://img.shields.io/badge/Stability_AI-SDXL-6E3FF3?style=for-the-badge)](https://stability.ai)
-[![Hugging Face](https://img.shields.io/badge/Hugging_Face-Inference_API-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black)](https://huggingface.co)
+![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-2.x-000000?style=for-the-badge&logo=flask&logoColor=white)
+![Stability AI](https://img.shields.io/badge/Stability_AI-SDXL-6E3FF3?style=for-the-badge)
+![Hugging Face](https://img.shields.io/badge/Hugging_Face-Inference_API-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
 </div>
 
 ---
 
-## 📖 Overview
+# 📖 Overview
 
-**FaceTrace AI** is a forensic intelligence web application that transforms natural-language witness descriptions into realistic police composite sketches. Built for law enforcement simulations and creative projects, it combines LLM-powered prompt refinement with AI image generation to produce authentic graphite-pencil-style suspect portraits.
+FaceTrace AI is an AI-powered forensic investigation system that transforms natural language witness descriptions into realistic police-style suspect sketches.
 
-The system features a dual-API generation pipeline (Stability AI → Hugging Face fallback), an offline similarity-matching mode, and a pre-loaded criminal database for face comparison.
+Instead of relying entirely on manual forensic artists, investigators can provide descriptive details about a suspect, and the application automatically generates multiple forensic sketch variations using state-of-the-art AI image generation models.
 
----
+To improve reliability, FaceTrace AI includes:
 
-## ✨ Features
+- 🧠 LLM-powered prompt refinement
+- 🎨 AI sketch generation
+- 🔍 Criminal database comparison
+- 📂 Case history management
+- 🌐 Multi-model fallback architecture
+- ⚡ Offline simulation mode
 
-| Feature | Description |
-|---|---|
-| 🎨 **AI Sketch Generation** | Generates 3 unique sketch variations per case using Stability AI SDXL or HuggingFace models |
-| 🧠 **LLM Prompt Refinement** | Uses a Hugging Face LLM to convert raw descriptions into optimised forensic prompts |
-| 🗂️ **Criminal Database** | Pre-loaded with 6 suspects, including sketches, case details, and status |
-| 🔍 **Face Matching / Compare** | Compares a new description against the database to find the top 3 closest suspects |
-| 📁 **Case History** | Persistent session-based case history shown in the sidebar |
-| 🛰️ **Offline Simulation Mode** | Falls back gracefully when APIs are unavailable — returns best-match from existing sketches |
-| 🌑 **Cyberpunk UI** | Sleek dark forensic interface with glitch effects, scanlines, and glassmorphism |
+The project demonstrates how modern AI can assist forensic investigations, criminal identification, educational simulations, and research.
 
 ---
 
-## 🖥️ Screenshots
+# ✨ Features
 
-> The interface features a glitch-title header, a 3-panel trait selector, real-time generation progress, and a case file viewer with sketch/photo comparison.
+## 🎨 AI Sketch Generation
 
----
+Generate multiple forensic sketch variations directly from witness descriptions.
 
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Python **3.9+**
-- A [Hugging Face](https://huggingface.co/settings/tokens) account (free) — for image generation & LLM prompt refinement
-- A [Stability AI](https://platform.stability.ai/) API key (optional but recommended) — for higher-quality SDXL output
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/Ashirrrwad/FaceTrace_AI.git
-cd FaceTrace_AI
-```
-
-### 2. Set Up a Virtual Environment
-
-```bash
-python -m venv venv
-source venv/bin/activate        # macOS / Linux
-# venv\Scripts\activate         # Windows
-```
-
-### 3. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Configure Environment Variables
-
-```bash
-cp .env.example .env
-```
-
-Open `.env` and fill in your keys:
-
-```env
-HF_TOKEN=your_huggingface_token_here
-STABILITY_API_KEY=your_stability_ai_key_here
-```
-
-> **Note:** The app works without `STABILITY_API_KEY` — it will automatically fall back to Hugging Face for generation.
-
-### 5. Run the App
-
-```bash
-python app.py
-```
-
-Open [http://localhost:5001](http://localhost:5001) in your browser.
+- Generates three sketch variations
+- High-quality SDXL generation
+- Pencil-sketch optimized prompts
 
 ---
 
-## 🧠 How It Works
+## 🧠 Intelligent Prompt Refinement
+
+Uses a Large Language Model (LLM) to convert raw witness descriptions into structured prompts optimized for AI image generation.
+
+---
+
+## 🔍 Criminal Database Matching
+
+Compare newly generated suspects with stored criminal records using similarity scoring.
+
+Returns:
+
+- Top 3 matching suspects
+- Similarity percentage
+- Criminal profile
+- Case information
+
+---
+
+## 📂 Case History
+
+Automatically stores generated investigations with:
+
+- Case ID
+- Witness description
+- Generated sketches
+- Investigation report
+
+---
+
+## 🌐 Multi-Engine AI Pipeline
+
+Supports multiple AI providers for maximum reliability.
+
+Priority order:
+
+1. Stability AI SDXL
+2. Hugging Face Inference API
+3. Offline Simulation Mode
+
+---
+
+## 🌑 Modern Cyberpunk Interface
+
+Dark-themed forensic dashboard featuring:
+
+- Glassmorphism UI
+- Glitch animations
+- Scanline effects
+- Responsive layout
+
+---
+
+# 🎥 Demo
+
+> Replace the following with your demo GIF after deployment.
 
 ```
 Witness Description
         │
         ▼
-┌───────────────────┐
-│  LLM Prompt       │  HuggingFace Mistral/Zephyr refines the raw text
-│  Refinement       │  into structured forensic image generation prompt
-└────────┬──────────┘
-         │
-         ▼
-┌───────────────────┐
-│  Image Generation │  Tries Stability AI SDXL first (3 variations)
-│  Pipeline         │  Falls back to HuggingFace if unavailable
-└────────┬──────────┘
-         │
-         ▼
-┌───────────────────┐
-│  Sketch Saved     │  PNG saved to static/images/cases/
-│  to Disk          │  Entry persisted to database.json
-└────────┬──────────┘
-         │
-         ▼
-┌───────────────────┐
-│  Face Comparison  │  Description matched against criminal DB
-│  (/compare)       │  Returns top 3 similarity-scored suspects
-└───────────────────┘
+Generate Sketch
+        │
+        ▼
+View AI Results
+        │
+        ▼
+Compare Criminal Database
+        │
+        ▼
+Investigation Report
 ```
 
 ---
 
-## 📁 Project Structure
+# 🖼 Screenshots
+
+Add screenshots after completing the project.
+
+| Dashboard | Sketch Generation |
+|-----------|-------------------|
+| Screenshot | Screenshot |
+
+| Criminal Match | Case History |
+|----------------|--------------|
+| Screenshot | Screenshot |
+
+---
+
+# 🏗 System Architecture
 
 ```
-FaceTrace_AI/
-├── app.py                       # Flask backend, API routes, generation logic
-├── database.json                # Suspect criminal database (suspects + generated cases)
-├── requirements.txt             # Python dependencies
-├── .env.example                 # Environment variable template
+                 Witness Description
+                         │
+                         ▼
+              Prompt Refinement (LLM)
+                         │
+                         ▼
+           Structured Forensic Prompt
+                         │
+                         ▼
+        Stability AI SDXL Generation
+                 │
+      (Fallback if unavailable)
+                 ▼
+      Hugging Face Image Generation
+                 │
+      (Fallback if unavailable)
+                 ▼
+         Offline Simulation Mode
+                 │
+                 ▼
+      Generated Composite Sketch
+                 │
+                 ▼
+     Criminal Database Comparison
+                 │
+                 ▼
+        Investigation Report
+```
+
+---
+
+# ⚙ How It Works
+
+### Step 1
+
+The investigator enters a witness description.
+
+Example:
+
+> Male, approximately 35 years old, short beard, scar on left cheek, deep-set eyes.
+
+↓
+
+### Step 2
+
+The description is refined using an LLM to create a detailed forensic image-generation prompt.
+
+↓
+
+### Step 3
+
+The optimized prompt is sent to Stability AI.
+
+↓
+
+### Step 4
+
+If Stability AI is unavailable, the request automatically falls back to Hugging Face.
+
+↓
+
+### Step 5
+
+If no AI service is available, FaceTrace AI enters Offline Simulation Mode and retrieves the closest matching suspect based on trait similarity.
+
+↓
+
+### Step 6
+
+Generated sketches are saved and added to the investigation history.
+
+---
+
+# 🚀 Getting Started
+
+## Prerequisites
+
+- Python 3.9+
+- Git
+- Hugging Face Access Token
+- Stability AI API Key (Optional)
+
+---
+
+## Clone Repository
+
+```bash
+git clone https://github.com/Ashirrrwad/FaceTrace_AI.git
+
+cd FaceTrace_AI
+```
+
+---
+
+## Create Virtual Environment
+
+Windows
+
+```bash
+python -m venv venv
+
+venv\Scripts\activate
+```
+
+Linux / macOS
+
+```bash
+python3 -m venv venv
+
+source venv/bin/activate
+```
+
+---
+
+## Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Configure Environment Variables
+
+Create a `.env` file.
+
+```env
+HF_TOKEN=your_huggingface_token
+
+STABILITY_API_KEY=your_stability_api_key
+```
+
+> **Note:** `STABILITY_API_KEY` is optional. If omitted, the application automatically uses Hugging Face for image generation.
+
+---
+
+## Run the Application
+
+```bash
+python app.py
+```
+
+Open your browser:
+
+```
+http://localhost:5001
+```
+
+---
+
+# 📡 API Reference
+
+## POST `/generate`
+
+Generate suspect sketches.
+
+### Request
+
+```json
+{
+    "case_id": "CRM-1001",
+    "description": "Male, 40 years old, scar on left cheek",
+    "traits": {
+        "gender": "Male",
+        "age": "40",
+        "style": "Pencil Sketch"
+    }
+}
+```
+
+### Response
+
+```json
+{
+    "success": true,
+    "primary_url": "/static/images/cases/sketch1.png",
+    "var1_url": "/static/images/cases/sketch2.png",
+    "var2_url": "/static/images/cases/sketch3.png",
+    "confidence": 91,
+    "is_simulated": false
+}
+```
+
+---
+
+## POST `/compare`
+
+Compare suspect description against stored criminal records.
+
+### Request
+
+```json
+{
+    "description": "Female with green eyes and tattoo on neck"
+}
+```
+
+### Response
+
+```json
+{
+    "matches":[
+        {
+            "id":"CRM-201",
+            "name":"Sarah Miller",
+            "similarity":81
+        }
+    ]
+}
+```
+
+---
+
+## GET `/cases`
+
+Returns every stored criminal profile.
+
+---
+
+# 📂 Project Structure
+
+```
+FaceTrace_AI
+│
+├── app.py
+├── database.json
+├── requirements.txt
 ├── README.md
+├── .env.example
 │
-├── templates/
-│   └── index.html               # Single-page app (Jinja2 template)
+├── templates
+│   └── index.html
 │
-└── static/
-    ├── favicon.svg
-    ├── css/
-    │   └── style.css            # Cyberpunk dark theme with animations
-    ├── js/
-    │   └── main.js              # Frontend logic (generation, comparison, UI)
-    └── images/
-        └── cases/               # Suspect mugshots + AI-generated sketches
+└── static
+    ├── css
+    │   └── style.css
+    │
+    ├── js
+    │   └── main.js
+    │
+    ├── images
+    │   └── cases
+    │
+    └── favicon.svg
 ```
 
 ---
 
-## 🔌 API Reference
-
-### `POST /generate`
-
-Generate a forensic sketch from a description.
-
-**Request Body:**
-```json
-{
-  "case_id": "CRM-0042",
-  "description": "Male, late 40s, deep-set eyes, thin lips, receding hairline, scar on left cheek",
-  "traits": {
-    "age": "40",
-    "gender": "male",
-    "style": "pencil sketch"
-  }
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "primary_url": "/static/images/cases/crm_0042_primary.png",
-  "var1_url": "/static/images/cases/crm_0042_var1.png",
-  "var2_url": "/static/images/cases/crm_0042_var2.png",
-  "report": "...",
-  "confidence": 87,
-  "is_simulated": false
-}
-```
-
----
-
-### `POST /compare`
-
-Compare a description against the criminal database.
-
-**Request Body:**
-```json
-{
-  "description": "Female, 30s, tattooed arms, green eyes, ponytail"
-}
-```
-
-**Response:**
-```json
-{
-  "matches": [
-    { "id": "CRM-6112", "name": "Sarah Miller", "similarity": 74, ... }
-  ]
-}
-```
-
----
-
-### `GET /cases`
-
-Returns all suspects in the criminal database.
-
----
-
-## 🔑 Environment Variables
-
-| Variable | Required | Description |
-|---|---|---|
-| `HF_TOKEN` | ✅ Yes | Hugging Face User Access Token (for LLM + image generation) |
-| `STABILITY_API_KEY` | ⚪ Optional | Stability AI key for SDXL generation (higher quality) |
-
----
-
-## 🛠️ Tech Stack
+# 🛠 Tech Stack
 
 | Layer | Technology |
-|---|---|
-| Backend | Python 3.9+, Flask |
-| AI — Image Gen (Primary) | Stability AI SDXL 1.0 |
-| AI — Image Gen (Fallback) | Hugging Face Inference API |
-| AI — Prompt Refinement | Hugging Face LLM (Mistral/Zephyr) |
+|--------|------------|
+| Backend | Python |
+| Framework | Flask |
+| Frontend | HTML, CSS, JavaScript |
+| Prompt Engineering | Hugging Face LLM |
+| Image Generation | Stability AI SDXL |
+| Backup Generator | Hugging Face Inference API |
 | Image Processing | Pillow |
-| Frontend | Vanilla HTML, CSS, JavaScript |
-| Fonts | Orbitron, Rajdhani, JetBrains Mono |
+| Database | JSON |
+| Version Control | Git & GitHub |
 
 ---
 
-## ⚙️ Generation Modes
+# ⚙ AI Generation Pipeline
 
-The app uses a **priority cascade** for image generation:
+The application follows a three-stage generation strategy.
 
-1. **Stability AI SDXL** — Primary. Highest quality. Produces 3 compositional variations per case.
-2. **Hugging Face Inference API** — Secondary fallback. Uses 3 different seeds for variation.
-3. **Offline Simulation** — Final fallback. Returns the closest-matching pre-existing sketch from the database using trait similarity scoring. No API call required.
+### Primary
+
+✅ Stability AI SDXL
+
+- Highest quality
+- Fast generation
+- Three variations
+
+↓
+
+### Secondary
+
+✅ Hugging Face Inference API
+
+- Automatic fallback
+- Multiple random seeds
+
+↓
+
+### Final Fallback
+
+✅ Offline Simulation
+
+- No internet required
+- Returns closest criminal sketch
+- Uses similarity scoring
 
 ---
 
-## 📄 License
+# 🔑 Environment Variables
 
-MIT License — free to use, modify, and distribute with attribution.
+| Variable | Required | Description |
+|----------|----------|-------------|
+| HF_TOKEN | ✅ | Hugging Face Access Token |
+| STABILITY_API_KEY | Optional | Stability AI API Key |
+
+---
+
+# ⚠ Challenges
+
+### Prompt Engineering
+
+Witness descriptions are often incomplete or inconsistent.
+
+**Solution**
+
+Implemented LLM-based prompt refinement before image generation.
+
+---
+
+### AI Service Availability
+
+External APIs may fail or become rate-limited.
+
+**Solution**
+
+Implemented a cascading fallback architecture.
+
+---
+
+### Sketch Consistency
+
+Generative models often produce photorealistic outputs.
+
+**Solution**
+
+Designed forensic-specific prompts to encourage graphite pencil sketches.
+
+---
+
+### Criminal Matching
+
+Generated suspects must be compared against existing records.
+
+**Solution**
+
+Built a similarity scoring algorithm using facial traits and metadata.
+
+---
+
+# 🚀 Future Enhancements
+
+- FaceNet-based facial embeddings
+- Real facial recognition support
+- MongoDB integration
+- Authentication system
+- Cloud deployment
+- PDF investigation reports
+- Voice-to-sketch generation
+- Multilingual witness support
+- Criminal analytics dashboard
+- Fine-tuned forensic diffusion model
+
+---
+
+# 🤝 Contributing
+
+Contributions are welcome.
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Commit your changes.
+4. Push your branch.
+5. Open a Pull Request.
+
+---
+
+# 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+# 🙏 Acknowledgements
+
+Special thanks to the open-source community and the technologies that made this project possible.
+
+- Stability AI
+- Hugging Face
+- Flask
+- Pillow
+- Python Community
 
 ---
 
 <div align="center">
-Built with ⚡ by <a href="https://github.com/Ashirrrwad">Ashirrrwad</a>
+
+## ⭐ Star this repository if you found it useful!
+
+Built with ❤️ by **Ashirwad**
+
 </div>
