@@ -18,18 +18,12 @@ STABILITY_API_KEY = os.getenv("STABILITY_API_KEY")
 
 client = InferenceClient(token=HF_TOKEN)
 
-# ── Prompt Engineering Constants ────────────────────────────────────────────
-
-# Prepended to every positive prompt to anchor the model in police-sketch style.
-# Deliberately rough / amateur — discourages the photorealistic look.
 FORENSIC_STYLE_PREFIX = (
     "Authentic police composite sketch, rough graphite pencil on paper, "
     "amateur forensic art, flat lighting, straight-on mugshot framing, "
     "single face only, plain white background, "
 )
 
-# Applied as a negative weight to every generation call (Stability + HF).
-# Targets the specific failure modes: multiple faces, cinematic look, comic art.
 GLOBAL_NEGATIVE_PROMPT = (
     "multiple faces, split screen, character sheet, cinematic lighting, "
     "3d render, photorealistic, photography, comic book, graphic novel, "
@@ -38,7 +32,6 @@ GLOBAL_NEGATIVE_PROMPT = (
     "anime, cartoon, full body, wide shot, looking away, eyes closed"
 )
 
-# Directory where generated sketch PNGs are saved
 SKETCH_OUTPUT_DIR = os.path.join(os.path.dirname(__file__), 'static', 'images', 'cases')
 os.makedirs(SKETCH_OUTPUT_DIR, exist_ok=True)
 
@@ -48,7 +41,6 @@ STABILITY_URL = "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024
 
 CRIMINAL_DB = []
 
-# Separate dict for generated sketches persisted to database.json under key 'generated'
 GENERATED_CASES = {}
 
 DB_PATH = os.path.join(os.path.dirname(__file__), 'database.json')
@@ -63,11 +55,9 @@ def load_criminal_db():
         try:
             with open(DB_PATH, 'r') as f:
                 raw = json.load(f)
-            # Legacy format: top-level JSON array
             if isinstance(raw, list):
                 CRIMINAL_DB = raw
                 GENERATED_CASES = {}
-            # New combined format: {"suspects": [...], "generated": {...}}
             elif isinstance(raw, dict):
                 CRIMINAL_DB = raw.get('suspects', [])
                 GENERATED_CASES = raw.get('generated', {})
@@ -93,7 +83,6 @@ def save_generated_case(case_id: str, description: str, image_path: str):
     try:
         with open(DB_PATH, 'r') as f:
             raw = json.load(f)
-        # Migrate legacy list to new combined format on first write
         if isinstance(raw, list):
             combined = {"suspects": raw, "generated": {}}
         else:
@@ -127,9 +116,6 @@ def llm_refine_prompt(description_data):
     }
     style_suffix = style_map.get(style.lower(), "forensic composite sketch, pencil drawing")
 
-    # Per-call negative prompt — merged with the global constant below.
-    # If the witness mentions the subject is clean-shaven we also exclude
-    # beard/mustache from the positive space by blocking them negatively.
     local_negative = (
         "beard, mustache, " if ("clean" in desc.lower() or "shaven" in desc.lower()) else ""
     )
@@ -168,7 +154,6 @@ def llm_refine_prompt(description_data):
     except Exception as e:
         print(f"Prompt refinement error: {e}. Engaging offline keyword extractor fallback.")
         
-        # Local keyword extraction fallback
         desc_lower = desc.lower()
         extracted_features = []
         
@@ -224,8 +209,6 @@ def generate_image_from_stability(prompt: str, negative_prompt: str) -> Optional
             "Accept": "application/json",
         }
 
-        # Raise cfg_scale slightly (8) to push the model harder toward the positive prompt,
-        # which helps the rough sketch style actually dominate.
         payload = {
             "text_prompts": [
                 {"text": prompt,           "weight": 1.0},
@@ -244,7 +227,6 @@ def generate_image_from_stability(prompt: str, negative_prompt: str) -> Optional
             result = response.json()
             img_base64 = result["artifacts"][0]["base64"]
             print("DEBUG: ✅ Stability AI image generated successfully.")
-            # Return raw bytes so the caller can save them to disk
             return base64.b64decode(img_base64)
         else:
             print(f"DEBUG: ❌ Stability AI error {response.status_code} -> {response.text}")
@@ -299,13 +281,11 @@ def save_image_to_disk(case_id: str, img_bytes: bytes, suffix: str = "primary") 
     (spaces, #, colons, slashes, etc.) can ever appear in the URL.
     """
     import re
-    # Keep only alphanumeric, hyphens, and underscores
     safe_id = re.sub(r'[^a-z0-9\-_]', '_', case_id.lower())
-    # Collapse multiple underscores / leading-trailing underscores
     safe_id = re.sub(r'_+', '_', safe_id).strip('_')
     filename = f"{safe_id}_{suffix}.png"
     filepath = os.path.join(SKETCH_OUTPUT_DIR, filename)
-    os.makedirs(SKETCH_OUTPUT_DIR, exist_ok=True)   # guard: ensure dir always exists
+    os.makedirs(SKETCH_OUTPUT_DIR, exist_ok=True)   #
     with open(filepath, 'wb') as f:
         f.write(img_bytes)
     web_path = f"/static/images/cases/{filename}"
@@ -410,9 +390,7 @@ def generate_sketch():
             "style": traits.get('style', 'pencil sketch')
         }
 
-        # Step 1 — Refine and build the full prompt
         refined_prompt, negative_prompt = llm_refine_prompt(description_data)
-        # Prepend the forensic style keywords
         forensic_prompt = FORENSIC_STYLE_PREFIX + refined_prompt
         master_seed = random.randint(1, 10**9)
 
@@ -422,13 +400,10 @@ def generate_sketch():
             ", soft studio lighting, slight head tilt right"
         ]
 
-        # These will hold web-accessible URL strings for the response
         image_urls = []
         primary_image_url = None
         is_simulated = False
 
-        # Step 2a — Try Stability AI (primary) — 3 variations via prompt modifiers
-        # Each modifier produces a distinct compositional variation.
         VARIATION_SUFFIXES   = ["primary", "var1", "var2"]
         VARIATION_MODIFIERS  = [
             "",
@@ -456,7 +431,6 @@ def generate_sketch():
         else:
             print("DEBUG: Stability AI key missing — skipping.")
 
-        # Step 2b — HuggingFace fallback: call 3 times with unique seeds for distinct results
         if not image_urls and HF_TOKEN:
             print("DEBUG: Stability AI unavailable — trying HuggingFace for 3 variations...")
             seeds = [
@@ -464,7 +438,6 @@ def generate_sketch():
                 master_seed + 1000,
                 master_seed + 2000,
             ]
-            # Slightly different prompt wording per variation to encourage diversity
             hf_prompts = [
                 forensic_prompt,
                 forensic_prompt + ", slight side lighting, serious expression",
@@ -484,7 +457,6 @@ def generate_sketch():
             if not image_urls:
                 print("DEBUG: All HuggingFace calls failed — entering simulation mode.")
 
-        # Step 3 — Persist to DB and build response
         if image_urls:
             primary_url = image_urls[0] if len(image_urls) > 0 else None
             var1_url    = image_urls[1] if len(image_urls) > 1 else None
@@ -509,7 +481,6 @@ def generate_sketch():
                 "primary_url": primary_url,
                 "var1_url": var1_url,
                 "var2_url": var2_url,
-                # Keep legacy fields for backwards compatibility
                 "image_url": primary_url,
                 "images": image_urls,
                 "report": reverse_report,
@@ -518,19 +489,15 @@ def generate_sketch():
                 "master_seed": master_seed
             })
 
-        # Step 4 — Offline simulation fallback (no API available or all calls failed)
         is_simulated = True
         print("DEBUG: Engaging Offline Simulation Mode...")
 
-        # Helper: only include a sketch URL if the physical file exists on disk.
-        # This prevents the frontend from getting a 404 for a missing static file.
         static_root = os.path.join(os.path.dirname(__file__), 'static')
 
         def _file_exists(url_path: str) -> bool:
             """Return True only if the static file at url_path actually exists on disk."""
             if not url_path:
                 return False
-            # url_path is like /static/images/cases/crm-7721_sketch.png
             rel = url_path.lstrip('/')
             return os.path.isfile(os.path.join(os.path.dirname(__file__), rel))
 
@@ -544,7 +511,6 @@ def generate_sketch():
 
         if matches and matches[0][0] > 10:
             primary_score, primary_suspect = matches[0]
-            # Only use the matched suspect's sketch if it actually exists on disk
             candidate = primary_suspect.get('sketch_url', primary_suspect.get('image_url', ''))
             primary_url = candidate if _file_exists(candidate) else DEFAULT_SKETCH
             reverse_report = (
@@ -565,7 +531,7 @@ def generate_sketch():
                     var_images.append(p_url)
             image_urls = [primary_url] + var_images
         else:
-            # Absolute fallback — use whichever pre-existing sketches are confirmed on disk
+            
             candidates = [
                 '/static/images/cases/crm-7721_sketch.png',
                 '/static/images/cases/crm-9904_sketch.png',
@@ -573,7 +539,7 @@ def generate_sketch():
             ]
             image_urls = [u for u in candidates if _file_exists(u)]
             if not image_urls:
-                # Nothing on disk at all — return a clear error rather than a broken image
+               
                 return jsonify({
                     "error": "Both AI APIs failed and no fallback sketches exist on disk. "
                              "Please add images to static/images/cases/ or check API keys."
