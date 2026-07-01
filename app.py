@@ -394,15 +394,8 @@ def generate_sketch():
         forensic_prompt = FORENSIC_STYLE_PREFIX + refined_prompt
         master_seed = random.randint(1, 10**9)
 
-        variation_modifiers = [
-            "",
-            ", slight side lighting, serious expression",
-            ", soft studio lighting, slight head tilt right"
-        ]
-
         image_urls = []
         primary_image_url = None
-        is_simulated = False
 
         VARIATION_SUFFIXES   = ["primary", "var1", "var2"]
         VARIATION_MODIFIERS  = [
@@ -547,9 +540,16 @@ def generate_sketch():
             reverse_report = "BIOMETRIC SIMULATION ENGAGED. General suspect profile generated matching basic age and gender traits."
             confidence = round(random.uniform(72, 84), 1)
 
+        primary_url = image_urls[0] if len(image_urls) > 0 else None
+        var1_url    = image_urls[1] if len(image_urls) > 1 else None
+        var2_url    = image_urls[2] if len(image_urls) > 2 else None
+
         return jsonify({
             "success": True,
-            "image_url": image_urls[0] if image_urls else None,
+            "primary_url": primary_url,
+            "var1_url": var1_url,
+            "var2_url": var2_url,
+            "image_url": primary_url,
             "images": image_urls,
             "report": reverse_report,
             "confidence": confidence,
